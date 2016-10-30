@@ -9,8 +9,8 @@ The board structure is:
      [0, 1, 2, 3, 4]
      [0, 1, 2, 3, 4]]
 
-Rows in this grid are the domain of each row. IE in the row [0, 1, 2] the queen can be placed on the 1st,
-2nd, or 3rd column.
+Rows in this grid are the domain of each row. IE in the row [0, 1, 2] the queen can be placed on the
+1st, 2nd, or 3rd column.
 """
 import copy
 import itertools
@@ -43,28 +43,41 @@ def backtrack(grid):
 
 
 def arc_consistency(grid):
+    """
+    Params: grid
+    Returns: True if the grid can be made fully arc consistent, false if not
+    Applies arc consistency to every arc in the grid.
+    """
     n = range(len(grid))
     queue = set(itertools.permutations(n, r=2))
     while queue:
-        row1_index, row2_index = queue.pop()
-        if revise(grid, row1_index, row2_index):
-            if len(grid[row1_index]) == 0:
+        head, tail = queue.pop()
+        if revise(grid, head, tail):
+            if len(grid[tail]) == 0:
                 return False
-            for pair in [(row1_index, y) for y in n if (y != row2_index) and (y != row1_index)]:
-                queue.add(pair)
+            queue |= set([(head, y) for y in n if (y != tail) and (y != head)])
     return True
 
 
-def revise(grid, r1, r2):
+def revise(grid, head, tail):
+    """
+    Params: grid, and two row indexes.
+    Returns: True if the tail has had elements removed from its domain, false if not
+    Removes any elements from the tail that do not work based on the head domain
+    """
     revised = False
-    for value in grid[r1]:
-        if fails_constraints(grid[r2], grid[r1]):
-            grid[r1].remove(value)
+    for value in grid[tail]:
+        if fails_constraints(head, tail):
+            grid[tail].remove(value)
         revised = True
     return revised
 
 
-def fails_constraints(row2, row1):
+def fails_constraints(head, tail):
+    """
+    Params: grid and two row indexes
+    Returns: True if the value from the tail is invalid to the head, False if not
+    """
     pass
 
 
