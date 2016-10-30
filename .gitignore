@@ -1,3 +1,5 @@
+.tox/
+.cache/
 *.pyc
 .*.swp
 .*.swo
