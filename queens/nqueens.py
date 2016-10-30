@@ -43,13 +43,15 @@ def backtrack(grid):
 
 
 def arc_consistency(grid):
-    queue = list(itertools.permutations(range(len(grid)), r=2))
+    n = range(len(grid))
+    queue = set(itertools.permutations(n, r=2))
     while queue:
         row1_index, row2_index = queue.pop()
         if revise(grid, row1_index, row2_index):
             if len(grid[row1_index]) == 0:
                 return False
-            # TODO: Add neighboring arcs to queue
+            for pair in [(row1_index, y) for y in n if (y != row2_index) and (y != row1_index)]:
+                queue.add(pair)
     return True
 
 
@@ -66,7 +68,6 @@ def fails_constraints(row2, row1):
     pass
 
 
-# UNUSED
 def propagate_constraints(grid, row_index, value):
     """
     Take a grid, return the grid that will be the result of enforcing
