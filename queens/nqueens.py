@@ -13,6 +13,31 @@ Rows in this grid are the domain of each row. IE in the row [0, 1, 2] the queen 
 1st, 2nd, or 3rd column.
 """
 import itertools
+import copy
+
+
+def backtrack_start(number):
+    """
+    Starts the actual backtracking.
+    """
+    grid = [list(range(number)) for y in range(number)]
+    return ac3_backtrack(grid)
+
+
+def ac3_backtrack(grid):
+    """
+    Does backtrack search with added arc_consistency
+    """
+    if complete(grid):
+        return grid
+    row_index = grid.index(next((row for row in grid if len(row) != 1), None))
+    for column in grid[row_index]:
+        grid_copy = copy.deepcopy(grid)
+        grid_copy[row_index] = [column]
+        if arc_consistency(grid_copy):
+            new_grid = ac3_backtrack(grid_copy)
+            if new_grid is not None:
+                return ac3_backtrack(grid_copy)
 
 
 def arc_consistency(grid):
@@ -28,7 +53,8 @@ def arc_consistency(grid):
         if revise(grid, head, tail):
             if len(grid[tail]) == 0:
                 return False
-            queue |= set([(head, y) for y in n if (y != tail) and (y != head)])
+            neighbors = set([(y, tail) for y in n if y != tail])
+            queue |= neighbors
     return True
 
 
@@ -51,13 +77,11 @@ def fails_constraints(grid, head, tail, value):
     Params: grid, head row index, tail row index, value to check.
     Returns: True if the value from the tail is invalid to the head, False if not
     """
-    if value in grid[head]:
-        return True
-    if value-(abs(tail-head)) in grid[head]:
-        return True
-    if value+(abs(tail-head)) in grid[head]:
-        return True
-    return False
+    # If the value for the tail row CANNOT be placed in the HEAD row, return True.
+    vertical = all([value == item for item in grid[head]])
+    diagonal_left = all([value-(abs(tail-head)) == item for item in grid[head]])
+    diagonal_right = all([value+(abs(tail-head)) == item for item in grid[head]])
+    return any([vertical, diagonal_left, diagonal_right])
 
 
 def fails(grid):
@@ -77,4 +101,4 @@ def complete(grid):
 
 
 if __name__ == '__main__':
-    print("Not implemented yet.")
+    print(backtrack_start(10))
