@@ -40,18 +40,24 @@ def revise(grid, head, tail):
     """
     revised = False
     for value in grid[tail]:
-        if fails_constraints(head, tail):
+        if fails_constraints(grid, head, tail, value):
             grid[tail].remove(value)
-        revised = True
+            revised = True
     return revised
 
 
-def fails_constraints(head, tail):
+def fails_constraints(grid, head, tail, value):
     """
-    Params: grid and two row indexes
+    Params: grid, head row index, tail row index, value to check.
     Returns: True if the value from the tail is invalid to the head, False if not
     """
-    pass
+    if value in grid[head]:
+        return True
+    if value-(abs(tail-head)) in grid[head]:
+        return True
+    if value+(abs(tail-head)) in grid[head]:
+        return True
+    return False
 
 
 def fails(grid):
