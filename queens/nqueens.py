@@ -17,6 +17,8 @@ import itertools
 
 def backtrack_start(number):
     """
+    Params: number, the N in N-Queens
+    Returns: The solution position.
     Starts the actual backtracking.
     """
     grid = [list(range(number)) for y in range(number)]
@@ -25,6 +27,8 @@ def backtrack_start(number):
 
 def ac3_backtrack(grid):
     """
+    Params: grid, the current state of the grid.
+    Returns: the solution, or a recursive call to a child node.
     Does backtrack search with added arc_consistency
     """
     if complete(grid):
@@ -87,16 +91,16 @@ def fails_constraints(grid, head, tail, value):
 
 def fails(grid):
     """
-    Fails a grid if any of the rows have no possible solutions
+    Params: grid, a grid state
+    Returns: True if any row has no possible values, else False
     """
     return any(len(row) == 0 for row in grid)
 
 
 def complete(grid):
     """
-    Returns True if all of the rows in the grid are length 1, thus there's a queen in every row.
-    All other constraints will pass by the nature of checking them and propagating the constraints
-    in the actual backtracking recursion.
+    Params: grid, a grid state
+    Returns: True if all of the rows in the grid are length 1, else False
     """
     return all(len(row) == 1 for row in grid)
 
