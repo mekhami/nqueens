@@ -29,7 +29,9 @@ def ac3_backtrack(grid):
     """
     if complete(grid):
         return grid
-    row_index = grid.index(next((row for row in grid if len(row) != 1), None))
+    row_index = grid.index(
+        min([row for row in grid if len(row) > 1], key=len)
+    )
     for column in grid[row_index]:
         grid_copy = [row[:] for row in grid]
         grid_copy[row_index] = [column]
