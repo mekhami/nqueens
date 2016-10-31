@@ -13,7 +13,6 @@ Rows in this grid are the domain of each row. IE in the row [0, 1, 2] the queen 
 1st, 2nd, or 3rd column.
 """
 import itertools
-import copy
 
 
 def backtrack_start(number):
@@ -32,12 +31,12 @@ def ac3_backtrack(grid):
         return grid
     row_index = grid.index(next((row for row in grid if len(row) != 1), None))
     for column in grid[row_index]:
-        grid_copy = copy.deepcopy(grid)
+        grid_copy = [row[:] for row in grid]
         grid_copy[row_index] = [column]
         if arc_consistency(grid_copy):
             new_grid = ac3_backtrack(grid_copy)
             if new_grid is not None:
-                return ac3_backtrack(grid_copy)
+                return ac3_backtrack(new_grid)
 
 
 def arc_consistency(grid):
