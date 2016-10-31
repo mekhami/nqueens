@@ -33,9 +33,7 @@ def ac3_backtrack(grid):
     """
     if complete(grid):
         return grid
-    row_index = grid.index(
-        min([row for row in grid if len(row) > 1], key=len)
-    )
+    row_index = grid.index(most_constrained_row(grid))
     for column in grid[row_index]:
         grid_copy = [row[:] for row in grid]
         grid_copy[row_index] = [column]
@@ -46,7 +44,7 @@ def ac3_backtrack(grid):
 
 
 def arc_consistency(grid):
-    """
+    ""
     Params: grid
     Returns: True if the grid can be made fully arc consistent, false if not
     Applies arc consistency to every arc in the grid.
@@ -58,7 +56,7 @@ def arc_consistency(grid):
         if revise(grid, head, tail):
             if len(grid[tail]) == 0:
                 return False
-            neighbors = set([(y, tail) for y in n if y != tail])
+            neighbors = set((y, tail) for y in n if y != tail)
             queue |= neighbors
     return True
 
@@ -77,16 +75,28 @@ def revise(grid, head, tail):
     return revised
 
 
+def most_constrained_row(grid):
+    """
+    Params: grid
+    Returns: The row which has the fewest possible places to put the queen
+    """
+    return min([row for row in grid if len(row) > 1], key=len)
+
+
+def least_constraining_value(grid, row):
+    pass
+
+
 def fails_constraints(grid, head, tail, value):
     """
     Params: grid, head row index, tail row index, value to check.
     Returns: True if the value from the tail is invalid to the head, False if not
     """
     # If the value for the tail row CANNOT be placed in the HEAD row, return True.
-    vertical = all([value == item for item in grid[head]])
-    diagonal_left = all([value-(abs(tail-head)) == item for item in grid[head]])
-    diagonal_right = all([value+(abs(tail-head)) == item for item in grid[head]])
-    return any([vertical, diagonal_left, diagonal_right])
+    for item in grid[head]:
+        if value != item and value-(abs(tail-head)) != item and value+(abs(tail-head)) != item:
+            return False
+    return True
 
 
 def fails(grid):
