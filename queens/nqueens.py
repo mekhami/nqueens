@@ -44,7 +44,7 @@ def ac3_backtrack(grid):
 
 
 def arc_consistency(grid):
-    ""
+    """
     Params: grid
     Returns: True if the grid can be made fully arc consistent, false if not
     Applies arc consistency to every arc in the grid.
